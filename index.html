@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlantScan — Disease Detection</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+
+  <header>
+    <div class="logo">
+      <span class="logo-icon">🌿</span>
+      <span class="logo-text">PlantScan</span>
+    </div>
+    <nav>
+      <a href="#how-it-works">How it works</a>
+      <a href="https://github.com/yourusername/plant-disease-scanner" target="_blank" class="btn-nav">GitHub ↗</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-tag"><span class="tag-dot"></span>AI-Powered Plant Health</div>
+      <h1>Is your plant <em>healthy</em>?</h1>
+      <p class="hero-sub">Upload a photo of any plant leaf and get an instant AI diagnosis — free, powered by Gemini Vision.</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Free</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">&lt;10s</span><span class="stat-label">Analysis time</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">50+</span><span class="stat-label">Diseases detected</span></div>
+      </div>
+    </section>
+
+    <section class="scanner-card" id="scannerCard">
+      <div class="steps-indicator">
+        <div class="step-dot active" id="dot1"><span class="dot-num">1</span><span class="dot-label">Upload</span></div>
+        <div class="step-line" id="line1"></div>
+        <div class="step-dot" id="dot2"><span class="dot-num">2</span><span class="dot-label">API Key</span></div>
+        <div class="step-line" id="line2"></div>
+        <div class="step-dot" id="dot3"><span class="dot-num">3</span><span class="dot-label">Result</span></div>
+      </div>
+
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" accept="image/*" hidden />
+        <div class="upload-inner" id="uploadInner">
+          <div class="upload-icon-wrap">
+            <div class="upload-icon">📷</div>
+            <div class="upload-pulse"></div>
+          </div>
+          <p class="upload-title">Drop a leaf photo here</p>
+          <p class="upload-sub">or <span class="link" id="browseBtn">browse files</span></p>
+          <p class="upload-formats">JPG · PNG · WEBP — max 10MB</p>
+        </div>
+        <div class="preview-wrap" id="previewWrap" hidden>
+          <img id="preview" src="" alt="Preview" />
+          <div class="preview-overlay">
+            <button class="preview-action-btn" id="changeBtn">🔄 Change</button>
+            <button class="preview-action-btn danger" id="removeBtn">🗑 Remove</button>
+          </div>
+          <div class="preview-badge">✓ Photo ready</div>
+        </div>
+      </div>
+
+      <div class="api-row" id="apiRow">
+        <label for="apiKey"><span class="api-label-icon">🔑</span> OpenRouter API Key</label>
+        <div class="api-input-wrap">
+          <input type="password" id="apiKey" placeholder="sk-or-..." autocomplete="off" />
+          <button class="toggle-key-btn" id="toggleKeyBtn">👁</button>
+        </div>
+        <span class="api-hint">Free key from <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai</a> · Never stored anywhere</span>
+      </div>
+
+      <button class="scan-btn" id="scanBtn" disabled>
+        <span class="scan-btn-inner"><span class="scan-btn-icon-left">🔬</span><span class="scan-btn-text">Scan Plant</span></span>
+        <span class="scan-btn-arrow">→</span>
+      </button>
+
+      <div class="loading-area" id="loadingArea" hidden>
+        <div class="loading-visual">
+          <div class="leaf-spin">🌿</div>
+          <div class="loading-rings">
+            <div class="ring ring1"></div>
+            <div class="ring ring2"></div>
+            <div class="ring ring3"></div>
+          </div>
+        </div>
+        <p class="loading-title">Analysing your plant…</p>
+        <p class="loading-sub" id="loadingSubText">Examining leaf tissue</p>
+      </div>
+
+      <div class="result-area" id="resultArea" hidden>
+        <div class="result-glow" id="resultGlow"></div>
+        <div class="result-header">
+          <div class="result-icon-wrap" id="resultIconWrap">
+            <span class="result-status-icon" id="resultIcon"></span>
+          </div>
+          <div class="result-headline">
+            <div class="result-verdict" id="resultVerdict"></div>
+            <div class="result-confidence" id="resultConfidence"></div>
+          </div>
+        </div>
+        <div class="result-divider"></div>
+        <div class="result-body" id="resultBody"></div>
+        <div class="result-actions">
+          <button class="action-btn primary" id="resetBtn">🌱 Scan another plant</button>
+          <button class="action-btn secondary" id="copyResultBtn">📋 Copy result</button>
+        </div>
+      </div>
+
+      <div class="error-area" id="errorArea" hidden>
+        <span class="error-icon">⚠️</span>
+        <div><p class="error-title">Something went wrong</p><p id="errorMsg"></p></div>
+        <button class="error-dismiss" id="errorDismiss">✕</button>
+      </div>
+    </section>
+
+    <section class="history-section" id="historySection" hidden>
+      <h3 class="history-title">🕓 Recent Scans</h3>
+      <div class="history-list" id="historyList"></div>
+    </section>
+
+    <section class="how-it-works" id="how-it-works">
+      <h2>How it works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-icon">📷</div>
+          <h3>Upload a leaf photo</h3>
+          <p>Take a clear close-up of the plant leaf you want to diagnose. Better lighting = better results.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-icon">🤖</div>
+          <h3>AI Vision Analysis</h3>
+          <p>Gemini AI examines the image for disease, discoloration, lesions, and abnormalities.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-icon">🩺</div>
+          <h3>Get your diagnosis</h3>
+          <p>Receive a plain-language verdict with recommended treatments if needed.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>🌿 PlantScan — free &amp; open source</span>
+      <a href="https://github.com/yourusername/plant-disease-scanner" target="_blank">View on GitHub ↗</a>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
